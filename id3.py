@@ -5,27 +5,27 @@ from collections import Counter
 class Node:
     """
     A node can either be an internal node or a leaf node.
-    The attribute field is used for either attributes or classifications
+    The val field is used to store either attributes or classifications
     """
 
-    def __init__(self, idx=-1, threshold=0, left=None, right=None, attribute=""):
+    def __init__(self, idx=-1, threshold=0, left=None, right=None, val=""):
         """
         If there is an index and threshold, we know that this is an internal node 
         with an attribute. If not, we know that this is a leaf (classification) node
         
         Internal node: Node(attribute_idx, threshold, >= threshold, < threshold)
 
-        Leaf node: Node(attribute='true'|'false'|'healthy'|'colic')
+        Leaf node: Node(val='true'|'false'|'healthy'|'colic')
         """
         self.idx = idx
         self.threshold = threshold
         self.left = left
         self.right = right
-        self.attribute = attribute
+        self.val = val
         if idx != -1:
-            self.attribute = attributes[idx]
+            self.val = attributes[idx]
         if threshold != 0:
-            self.attribute += " " + str(threshold)
+            self.val += " " + str(threshold)
 
 
 def entropy(classifications):
@@ -129,9 +129,9 @@ def id3(data, default):
     Generates a decision tree based on the dataset
     """
     if len(data) == 0:
-        return Node(attribute=default)
+        return Node(val=default)
     elif len(classify(data)) == 1:
-        return Node(attribute=mode(data))
+        return Node(val=mode(data))
     attribute_idx, _gain, threshold = choose_attribute(data)
     # print("{} => IG: {} T: {}\n".format(attributes[attribute], _gain, threshold))
     left, right = partition(data, attribute_idx, threshold)
@@ -149,14 +149,14 @@ def print_tree(root, space=0, padding=20):
     print()
     for _ in range(padding, space):
         print(end=" ")
-    print(root.attribute)
+    print(root.val)
     print_tree(root.left, space)
 
 
 def validate(row, node):
     # Base case: Classification node
     if node.idx is -1:
-        return node.attribute == row[-1]
+        return node.val == row[-1]
     # Go left if >= threshold
     if row[node.idx] >= node.threshold:
         return validate(row, node.left)
