@@ -116,13 +116,11 @@ def choose_attribute(data):
             threshold = (values[i] + values[i + 1]) / 2
             # Partition dataset based on threshold
             left, right = partition(data, attribute_idx, threshold)
-            if len(left) == 0 or len(right) == 0:
-                continue
-            else:
-                curr_gain = info_gain(classify(data), [classify(left), classify(right)])
-                # If the current information gain is better than the previous best information gain
-                if curr_gain > best_attribute[1]:
-                    best_attribute = (attribute_idx, curr_gain, threshold)
+            curr_gain = info_gain(classify(data), [classify(left), classify(right)])
+            # If the current information gain is better than the previous best information gain
+            best_gain = best_attribute[1]
+            if curr_gain > best_gain:
+                best_attribute = (attribute_idx, curr_gain, threshold)
     return best_attribute
 
 
